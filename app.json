@@ -1,30 +1,59 @@
 {
   "expo": {
-    "name": "tradebud2",
+    "name": "TradeBud",
     "slug": "tradebud2",
     "version": "1.0.0",
+    "scheme": "tradebud",
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ],
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/tradebudLogo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/splashscreem.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#1b1b1b"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.theleftcab.tradebud"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/tradebudLogo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.theleftcab.tradebud"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5327316a-ac97-4270-a0be-08ad42b58dc5"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5327316a-ac97-4270-a0be-08ad42b58dc5"
     }
   }
 }
