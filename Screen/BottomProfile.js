@@ -75,31 +75,36 @@ const shareMessage = async () => {
 
 
 // function for fetching user media post from databases
-const fetchMediaPost = ()=>{
+const fetchMediaPost = () => {
   try {
     firestore()
-    .collection('user_post_data_with_media')
-    .where('username', '==', username)
-    .onSnapshot(quarySnapshot=>{
-      const size = quarySnapshot.size;
-      const data = []
-      setNo_media(size)
-      quarySnapshot.forEach(documentSnapshot=>{
-        const Data = documentSnapshot.data()
-        const id = documentSnapshot.id;
-        Data.id = id;
-        data.push(Data)
-      })
-      setMediaPost(data)
-    })
+      .collection('user_post_data_with_media')
+      .where('username', '==', username)
+      .onSnapshot((querySnapshot) => {
+        const size = querySnapshot.size;
+        const data = querySnapshot.docs.map((documentSnapshot) => {
+          const id = documentSnapshot.id;
+          const data = documentSnapshot.data();
+          return { ...data, id };
+        });
+
+        setNo_media(size);
+        setMediaPost(data);
+      });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
-useEffect(()=>{
-  fetchMediaPost()
+};
+
+useEffect(() => {
+  fetchMediaPost();
   // fetchTextPost() 
-}, [])
+}, []);
+
+
+
+
+
 
 useEffect(()=>{
   if(mediaPost){

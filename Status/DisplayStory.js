@@ -1,13 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Dimensions, TurboModuleRegistry } from 'react-native'
-import React, { useRef, useEffect, useState } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Dimensions, Animated, } from 'react-native'
+import React, { useRef, useEffect, useState, startTransition } from 'react'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { useSelector } from 'react-redux'
-import * as Progress from 'react-native-progress';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Video } from 'expo-av'
 import AntDesign from '@expo/vector-icons/AntDesign'
-import Progressbar from '../components/ProgressBar'
 import { ProgressBar } from 'react-native-paper'
 
 const window = {
@@ -17,33 +15,26 @@ const window = {
 
 
 
-
-
- const DisplayStory = ({navigation}) => {
-  const story = useSelector((state)=>state.story);
+const DisplayStory = ({ navigation }) => {
+  const story = useSelector((state) => state.story);
   const [isScrollViewReady, setIsScrollViewReady] = useState(false);
   const user = story.user;
+  const [story_content, setStory_content] = useState(user)
+  const [current, setcurrent] = useState(0)
   const [active_status, setActive_status] = useState()
-  
+  const [currentWidth, setCurrentWidth] = useState(0)
   const scrollViewRef1 = useRef(null)
-  const scrollViewRef = useRef(null)
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (scrollViewRef.current) {
-        scrollViewRef.current.scrollTo({
-          x: scrollViewRef.current.contentOffset + window.width * 1, // scroll one item width
-          animated: true,
-        });
-      }
-    }, 3000);
 
-    return () => clearInterval(interval);
-  }, [scrollViewRef]);
+
+  const scrollViewRef = useRef(null);
+  const itemWidth = window.width * 1;
+  const numItems = user.length;
+  const scrollInterval = useRef(null);
+
 
 
   // function for calculating how  much time before post has been uploaded
-  const beforetime = (time1)=>{
+  const beforetime = (time1) => {
     const currentTime = new Date().getTime()
     const milliseconds = currentTime - time1;
     const minute = 60 * 1000; // milliseconds in a minute
@@ -65,200 +56,218 @@ const window = {
       return `${Math.floor(milliseconds / year)} y`;
     }
   }
-  const size = user.length;
-  const width = ((window.width * 1) - (size * 2))/size;
-  console.log("width of two status:"+width)
-  console.log("total width:", window.width * 1)
+
+  // console.log(user)
+  // function for moving next story 
+  const next = () => {
+    if (current != story_content.length - 1) {
+      let tempData = story_content;
+      tempData[current].finish = 1;
+      setStory_content(tempData)
+      setcurrent(current + 1)
+      progress.setValue(0)
+    } else {
+      close()
+    }
+  }
+
+
+
+  const close = () => {
+    progress.setValue(0)
+    navigation.goBack()
+  }
+
+  //function for moving previous story
+  const previous = () => {
+    if (current - 1 >= 0) {
+      let tempData = story_content;
+      tempData[current].finish = 0;
+      setStory_content(tempData)
+      progress.setValue(0)
+      setcurrent(current - 1)
+    } else {
+      close()
+    }
+  }
+
+
+  const progress = useRef(new Animated.Value(0)).current;
+
+  const start = () => {
+    Animated.timing(progress, {
+      toValue: 1,
+      duration: 5000,
+      useNativeDriver: false,
+    }).start(({ finished }) => {
+      if (finished) {
+        next()
+      } else {
+        navigation.goBack()
+      }
+    })
+  }
+
+
+
+
+
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-
-
-         {/* Progress bar  */}
-        <View style={{
-          width: window.width * 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          
-        }}>
-        <ScrollView 
-          horizontal={true} 
-          contentContainerStyle={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: window.width * 1
-          }}
-          ref={scrollViewRef1}>
-          {user.map((item, index)=>(
-           <HeaderProgressBar width={width} />
-          ))}
-        </ScrollView>
-        </View>
-        <View style={{
-            width: window.width * 1,
-            flexDirection: 'row',
-            paddingLeft: 10,
-            paddingVertical: 10,
-
+      <SafeAreaView style={{
+        position: 'absolute',
+        backgroundColor: 'black',
+        width: window.width * 1,
+        height: window.height * 1,
       }}>
-        <TouchableOpacity onPress={()=>{navigation.goBack()}} touchSoundDisabled={false}   >
-          <Ionicons name='arrow-back' color={'white'} size={40} />
-        </TouchableOpacity>
-        <Image
-            source={{uri: user[0].profile_picture}}
-            style={{width: 40, height: 40, borderRadius: 20, marginHorizontal: 5}}
-          />
-        <View style={{}}>
-          <Text style={{color: 'white'}}>{user[0].username}</Text>
-          <Text style={{color: 'white'}}>.{beforetime(user[0].timestamp)} ago</Text>
-        </View>
-      </View>
-        <ScrollView horizontal={true} ref={scrollViewRef}  >
-          {user.map((item, index) => (
-            <Status key={index} item={item} beforetime={beforetime} size={size} navigation={navigation} />
-          ))}
-        </ScrollView>
+        <View style={styles.display_view}>
+          {story_content[current].text && <Text onLayout={() => {
+            progress.setValue(0)
+            start()
+          }} style={styles.text}>{story_content[current].text}</Text>}
+          {story_content[current].image_url && <Image onLoadEnd={() => {
+            progress.setValue(0)
+            start()
+          }} source={{ uri: story_content[current].image_url }} style={styles.image_view} resizeMode='cover' />}
+          {story_content[current].video_url && <Video onLoadEnd={() => {
+            progress.setValue(0)
+            start()
+          }} source={{ uri: story_content[current].video_url }} style={{
+            width: window.width * 1,
+            height: window.height * 1
+          }} />}
+          <View style={{
+            position: 'absolute',
+            top: 20,
+            left: 15,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Image style={{
+              width: window.width * 0.09,
+              height: window.height * 0.03,
+            }} source={require("../assets/back.png")} />
+            <View style={{marginLeft: 10}}>
+            <Image
+              source={{ uri: story_content[current].profile_picture }}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+              }}
+            />
+            </View>
+            
+            <View style={{ marginLeft: 10 }}>
+              <Text style={styles.txt}>{story_content[current].username}</Text>
+              <Text style={styles.txt}>{beforetime(story_content[current].timestamp)}</Text>
+            </View>
+          </View>
+          <View style={styles.main_touch}>
+            <TouchableOpacity
+              onPress={() => {
+                previous()
+              }}
+              style={{
+                width: window.width * 0.35,
+                height: window.height * 1
+              }}
+            >
 
-        <StatusBar backgroundColor='black' style='light' />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                next()
+              }}
+              style={{
+                width: window.width * 0.35,
+                height: window.height * 1
+              }}>
+
+            </TouchableOpacity>
+          </View>
+
+          <View style={{
+            position: 'absolute',
+            top: 10,
+            flex: 1,
+            flexDirection: 'row'
+          }}>
+
+            {user.map((item, index) => (
+              <View style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                height: 2,
+                flex: 1,
+                margin: 2
+              }}>
+                <Animated.View
+                  style={{
+                    flex: current === index ? progress : story_content[index].finish,
+                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                    // margin: 2,
+                    // height: 2
+                  }}
+                >
+
+                </Animated.View>
+              </View>
+            ))}
+
+          </View>
+
+
+
+        </View>
+
       </SafeAreaView>
     </SafeAreaProvider>
   )
 }
-export default DisplayStory;                            
-const Status = ({ item, beforetime, size, navigation }) => {
-
-    const newWidth = (window.width * 1) / size;
-    console.log(newWidth)
-    
-  return(
-    <View style={styles.statusItem}>
-      
-      <View style={{flex: 1, width: window.width * 0.9, justifyContent: 'center', alignItems: 'center' }}>
-        {item.text && <Text style={{
-          color: 'white',
-          fontSize: 30,
-
-        }}>{item.text}</Text>}
-        {item.image_url && <Image
-            source={{uri: item.image_url}}
-            style={{
-              width: window.width * 0.95,
-              height: window.height * 0.9
-            }}
-        />}
-        {item.video_url && <Video
-            source={{uri: item.video_url}}
-            style={{
-              width: window.width * 0.95,
-              height: window.height * 0.9
-            }}
-            useNativeControls={true}
-        />}
-      {/* <View style={{
-        position: 'absolute',
-        bottom: 10,
-        right: 10
-      }}>
-            <AntDesign name='heart' size={30} color={'white'} />
-      </View> */}
-      </View>
-
-    </View>
-  )
-}
-
-// function for displaying progress bar
-
-const HeaderProgressBar = ({width})=>{
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    let intervalId;
-    let duration = 100;
-    let progressIncrement = 1 / duration;
-
-    intervalId = setInterval(() => {
-      if (progress >= 1) {
-        clearInterval(intervalId);
-        return;
-      }
-      setProgress(progress + progressIncrement);
-    }, 100);
-
-    return () => clearInterval(intervalId);
-  }, [progress]);
-  return(
-    <View style={{
-              
-    }}> 
-      <ProgressBar
-        progress={progress}
-        color='white'
-        width={width}
-        style={{
-          height: 1,
-          backgroundColor: 'grey'
-        }}
-      
-      />
-      {/* <Progress.Bar
-          width={width}
-          borderColor={'white'}
-          borderWidth={0} 
-          useNativeDriver={true}
-          animationType={'decay'}
-          height={2}
-          unfilledColor='grey'
-          animated={true} 
-          progress={progress}
-          color='white'
-      /> */}
-    </View>
-  )
-}
 
 
-
-
-
-
-
-
-
-
+export default DisplayStory;
 
 
 
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  text: {
+    fontSize: 30,
+    color: 'white'
   },
-  statusItem: {
-    flexDirection: 'column',
+  main_touch: {
+    width: window.width * 1,
+    height: window.height * 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    // backgroundColor: 'green',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  display_view: {
+    width: window.width * 1,
+    height: window.height * 1,
     alignItems: 'center',
-    width: window.width * 1
+    justifyContent: 'center'
+  },
+  image_view: {
+    width: window.width * 1,
+    height: window.height * 1,
 
   },
-  statusDetails: {
-    marginTop: 4,
-  },
-  statusName: {
-    fontSize: 14,
-    color: '#fff',
-  },
-  statusTime: {
-    fontSize: 12,
-    color: '#bbb',
-  },
-  progressBar: {
-    width: 50,
-    height: 2,
-    borderRadius: 2,
-  },
+  txt: {
+    color: 'white',
+
+  }
 })
+
+
+
+
 
 
 

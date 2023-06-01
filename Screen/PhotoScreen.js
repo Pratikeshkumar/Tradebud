@@ -19,7 +19,7 @@ const PhotoScreen = ({navigation}) => {
       <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
         <View style>
           <ImageBackground
-            source={{uri: photo_post.image_url}}
+            source={{uri: photo_post.image_url, cache: 'reload'}}
             resizeMode='contain'
             style={{
               width: window.width * 1,

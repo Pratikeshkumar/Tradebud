@@ -68,7 +68,7 @@ const callOtp = async (phoneNumber)=>{
       height: window.height * 1
     }}>
       <View style={styles.container}>
-<Image source={require('../assets/bluetick.png')}  style={{marginTop:window.width*0.5,height:window.width*0.1,width:window.width*0.1}} />
+{/* <Image source={require('../assets/bluetick.png')}  style={{marginTop:window.width*0.5,height:window.width*0.1,width:window.width*0.1}} /> */}
         <Text style={styles.authentication}>Enter authentication code</Text>
 
         <Text style={styles.code}>
@@ -76,7 +76,7 @@ const callOtp = async (phoneNumber)=>{
         </Text>
 
         <View style={{
-          width: window.width * 0.6,
+          width: window.width * 0.7,
           borderBottomWidth: 1,
           borderBottomColor: 'white',
           alignItems: 'center',
@@ -102,9 +102,7 @@ const callOtp = async (phoneNumber)=>{
               padding: 10,
               borderWidth: 0.3,
               borderColor: 'black',
-              borderRadius: 2
-            
-              
+              borderRadius: 2,
             }}
           />
         </View>

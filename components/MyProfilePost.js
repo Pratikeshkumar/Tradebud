@@ -1,4 +1,4 @@
-import { Alert, FlatList, StyleSheet, Text, View, Dimensions,  Image, TouchableOpacity, RefreshControl } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, View, Dimensions,  Image, TouchableOpacity, RefreshControl, Share } from 'react-native'
 import React, {useEffect, useRef, useState} from 'react'
 import { Video, ResizeMode } from 'expo-av';
 // import Image from 'expo-image'
@@ -67,7 +67,7 @@ const DisplayPost = ({item, index, navigation})=>{
 const shareMessage = async () => {
   try {
     const result = await Share.share({
-      message: `tradebud://WatchUserProfileFromFeed/${username}`,
+      message: `tradebud://ViewSharedPostScreen/${username}`,
     });
     if (result.action === Share.sharedAction) {
       if (result.activityType) {
@@ -181,7 +181,7 @@ const shareMessage = async () => {
             {/* Post Profile Picture */}
             <View style={{width: window.width * 0.2,}}>
                 <Image 
-                    source={{uri: data.profile_picture}}
+                    source={{uri: data.profile_picture, cache: 'reload'}}
                     style={{width: 56, height: 56, borderRadius: 28}}
                 />
             </View>
@@ -206,7 +206,7 @@ const shareMessage = async () => {
                   navigation.navigate('PhotoScreen')}}
                 style={{flex: 1, width: window.width * 0.75, height: 200 }}>
                     <Image
-                        source={{uri: data.image_url}}
+                        source={{uri: data.image_url, cache: 'reload'}}
                         style={{flex: 1, }}
                         resizeMode='contain'
                         resizeMethod='scale'

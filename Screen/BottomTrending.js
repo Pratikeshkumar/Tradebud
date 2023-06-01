@@ -28,28 +28,31 @@ const BottomTrending = ({navigation}) => {
     const [loading, setLoading] = useState(true)
 
     //function for fetching trending data from user_post_data_with_media
-  useEffect(()=>{
-    try {
-      firestore()
-      .collection('user_post_data_with_media')
-      .orderBy("reached", "desc") // sort by "reached" field in descending order
-      .orderBy("timestamp", "desc")
-      .get()
-      .then(quarySnapshot=>{
-        const data = []
-        quarySnapshot.forEach(documentSnpashot=>{
-          const Data = documentSnpashot.data()
-          const id = documentSnpashot.id;
-          Data.id = id;
-          data.push(Data)
-        })
-        setData(data)
-        setLoading(false)
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }, [])
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const querySnapshot = await firestore()
+            .collection('user_post_data_with_media')
+            .orderBy("reached", "desc")
+            .orderBy("timestamp", "desc")
+            .get();
+    
+          const data = querySnapshot.docs.map((documentSnapshot) => {
+            const id = documentSnapshot.id;
+            const data = documentSnapshot.data();
+            return { ...data, id };
+          });
+    
+          setData(data);
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    
+      fetchData();
+    }, []);
+    
 
 
 

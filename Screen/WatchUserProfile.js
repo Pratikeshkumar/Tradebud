@@ -10,7 +10,6 @@ import firestore from '@react-native-firebase/firestore';
 import { addmessageUser } from '../store/messageSlice'
 import { selectedUser } from '../store/userSlice'
 import { myProfileData } from '../store/userdataSlice'
-import {LinearGradient} from 'expo-linear-gradient'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import EvilIcons from '@expo/vector-icons/EvilIcons'
 import { Video, ResizeMode } from 'expo-av'

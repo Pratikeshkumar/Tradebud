@@ -53,7 +53,7 @@ async function confirmCode() {
       backgroundColor: 'black'
     }}>
       <View style={styles.container}>
-<Image source={require('../assets/bluetick.png')}  style={{marginTop:window.width*0.5,height:window.width*0.1,width:window.width*0.1}} />
+{/* <Image source={require('../assets/bluetick.png')}  style={{marginTop:window.width*0.5,height:window.width*0.1,width:window.width*0.1}} /> */}
         <Text style={styles.authentication}>Enter authentication code</Text>
 
         <Text style={styles.code}>

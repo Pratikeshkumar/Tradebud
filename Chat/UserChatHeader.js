@@ -32,7 +32,7 @@ export default function UserChatHeader({navigation}) {
           </TouchableOpacity>
         <View>
           <Text style={{color: 'white', fontWeight: '800', fontSize: 20}}>{message_user.username}</Text>
-        <Text style={{color: 'white', fontWeight: '500'}}>active 8m ago </Text>
+        {/* <Text style={{color: 'white', fontWeight: '500'}}>active 8m ago </Text> */}
         </View>
       </View>
       <View style={{

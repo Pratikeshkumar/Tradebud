@@ -47,7 +47,8 @@ const storeUser = async ()=>{
       followers: [],
       followings: [],
       about_us: '',
-      purchased_post: []
+      purchased_post: [],
+      message_user: []
     }).then(()=>{
       save('username', username)
       dispatch(setLogined(true))
@@ -128,11 +129,7 @@ const handleTextInput = (text)=>{
             outlineStyle={{ borderRadius: 10 }}
             mode="flat"
             value={username}
-            onChangeText={(val)=>{
-              handleTextInput(val)
-              // checkUsername(val.toLowerCase())
-              // setUsername(val.toLocaleLowerCase())
-              }}
+            onChangeText={handleTextInput}
             maxLength={35}
             editable={editable}
             

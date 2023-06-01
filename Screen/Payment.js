@@ -33,63 +33,90 @@ const Payment = ({navigation}) => {
     const [widthdrawMoney, setWithdrawMoney] = useState()
     const [finalPrice, setFinalPrice] = useState()
 
-    useEffect(()=>{
-        try {
-            firestore()
-            .collection('transaction')
-            .doc(username)
-            .collection('transaction_history')
-            .onSnapshot(quarySnapshot=>{
-                    const data = [] 
-                    const deposited = []
-                    const widthdraw = []
-                quarySnapshot.forEach(documentSnapshot=>{
-                    const Data = documentSnapshot.data();
-                    const id = documentSnapshot.id;
-                    Data.id = id;
-                    data.push(Data)
-                    const deposites = documentSnapshot.data().deposited;
-                    const price = Data.price;
-                    if(deposites){
-                        deposited.push(price)
-                    } else{
-                        widthdraw.push(price)
-                    }
-                })
-                setTransaction(data.sort((a, b) => a.timestamp - b.timestamp))
-                setDepositedMoney(deposited)
-                setWithdrawMoney(widthdraw)
-            })
-        } catch (error) {
-            console.log(error)
+    useEffect(() => {
+        const unsubscribe = firestore()
+          .collection('transaction')
+          .doc(username)
+          .collection('transaction_history')
+          .onSnapshot((querySnapshot) => {
+            const data = [];
+            const deposited = [];
+            const widthdraw = [];
+      
+            querySnapshot.forEach((documentSnapshot) => {
+              const Data = documentSnapshot.data();
+              const id = documentSnapshot.id;
+              Data.id = id;
+              data.push(Data);
+      
+              const deposites = Data.deposited;
+              const price = Data.price;
+              if (deposites) {
+                deposited.push(price);
+              } else {
+                widthdraw.push(price);
+              }
+            });
+      
+            setTransaction(data.sort((a, b) => a.timestamp - b.timestamp));
+            setDepositedMoney(deposited);
+            setWithdrawMoney(widthdraw);
+          });
+      
+        return () => unsubscribe();
+      }, []);
+      
+
+
+
+    // useEffect(()=>{
+    //     if(depositedMoney && widthdrawMoney){
+    //         let depo = 0;
+    //         for(let i = 0; i < depositedMoney.length; i++ ){
+    //             depo += parseInt(depositedMoney[i])
+    //         }
+    //         let draw = 0;
+    //         for(let i = 0; i < widthdrawMoney.length; i++ ){
+    //             draw += parseInt(widthdrawMoney[i])
+    //         }
+    //         setFinalPrice(depo - draw)
+    //     } else if(depositedMoney) {
+    //         let depo = 0;
+    //         for(let i = 0; i < depositedMoney.length; i++ ){
+    //             depo += parseInt(depositedMoney[i])
+    //         }
+    //         setFinalPrice(depo)
+    //     } else{
+    //         setFinalPrice('0')
+    //     }
+    // }, [depositedMoney, widthdrawMoney, transaction])
+    useEffect(() => {
+        if (depositedMoney && widthdrawMoney) {
+          let depo = 0;
+          let draw = 0;
+      
+          for (let i = 0; i < depositedMoney.length; i++) {
+            depo += parseInt(depositedMoney[i]);
+          }
+      
+          for (let i = 0; i < widthdrawMoney.length; i++) {
+            draw += parseInt(widthdrawMoney[i]);
+          }
+      
+          setFinalPrice(depo - draw);
+        } else if (depositedMoney) {
+          let depo = 0;
+      
+          for (let i = 0; i < depositedMoney.length; i++) {
+            depo += parseInt(depositedMoney[i]);
+          }
+      
+          setFinalPrice(depo);
+        } else {
+          setFinalPrice('0');
         }
-
-    }, [])
-
-
-
-    useEffect(()=>{
-        if(depositedMoney && widthdrawMoney){
-            let depo = 0;
-            for(let i = 0; i < depositedMoney.length; i++ ){
-                depo += parseInt(depositedMoney[i])
-            }
-            let draw = 0;
-            for(let i = 0; i < widthdrawMoney.length; i++ ){
-                draw += parseInt(widthdrawMoney[i])
-            }
-            setFinalPrice(depo - draw)
-        } else if(depositedMoney) {
-            let depo = 0;
-            for(let i = 0; i < depositedMoney.length; i++ ){
-                depo += parseInt(depositedMoney[i])
-            }
-            setFinalPrice(depo)
-        } else{
-            setFinalPrice('0')
-        }
-    }, [depositedMoney, widthdrawMoney, transaction])
-
+      }, [depositedMoney, widthdrawMoney, transaction]);
+      
 
 
 

@@ -31,7 +31,7 @@ const AddMoney = ({navigation}) => {
     
 
 const launchRazorpay = ()=>{
-    if(price){
+    if(price < 10001){
         const time = new Date().getTime()
     setEditable(false)
     setLoading(true)
@@ -116,7 +116,7 @@ const launchRazorpay = ()=>{
         console.log(err)
     })
     } else{
-        Alert.alert("Error", "Enter Amount")
+        Alert.alert("Invalid", "Invalid Amount")
     }
     
 }
@@ -179,6 +179,12 @@ const launchRazorpay = ()=>{
                 </TouchableOpacity>
             )}
             </View>
+            <View style={{
+                width: window.width * 0.9
+            }}>
+            <Text style={{color: 'white'}}>maximum limit is ₹ 10000</Text>
+            </View>
+
             </View>
             <StatusBar backgroundColor='black' style='light' />
         </SafeAreaView>

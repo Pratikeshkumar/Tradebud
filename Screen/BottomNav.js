@@ -58,13 +58,13 @@ const BottomNav = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: window.width*0.25,
-                    height: 55,
+                    height: 50,
                     borderRightWidth: 0.6,
                     borderRightColor: 'white',
                   
                 }}
                 >
-                  <Icons name="home" size={50} color="#f5e490"/>     
+                  <Icons name="home" size={40} color="#f5e490"/>     
                 </View>
             ) : (
             <View
@@ -73,13 +73,13 @@ const BottomNav = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: window.width*0.25,
-                    height: 55,
+                    height: 50,
                     borderRightWidth: 0.6,
                     borderRightColor: 'white',
                   
                 }}
                 >
-                  <Icons name="home" size={40} color="white"/>     
+                  <Icons name="home" size={35} color="white"/>     
                 </View>
             )}
             </View>
@@ -97,13 +97,13 @@ const BottomNav = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     width: window.width*0.25,
-                    height: 55,
+                    height: 50,
                     borderRightWidth: 0.6,
                     borderRightColor: 'white'
                     
                   }}
                   >
-                    <AntDesign name="pluscircleo" size={50} color="#f5e490"/>     
+                    <AntDesign name="pluscircleo" size={40} color="#f5e490"/>     
                   </View>
               ) : (
               <View
@@ -112,13 +112,13 @@ const BottomNav = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     width: window.width*0.25,
-                    height: 55,
+                    height: 50,
                     borderRightWidth: 0.6,
                     borderRightColor: 'white'
                     
                   }}
                   >
-                    <AntDesign name="pluscircleo" size={40} color="white"/>     
+                    <AntDesign name="pluscircleo" size={35} color="white"/>     
                   </View>
               )}
               </View>
@@ -137,13 +137,13 @@ const BottomNav = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: window.width*0.25,
-                    height: 55,
+                    height: 50,
                     borderRightWidth: 0.6,
                     borderRightColor: 'white'
 
                 }}
                 >
-                  <Icons1 name="bar-graph" size={50} color="#f5e490"/>     
+                  <Icons1 name="bar-graph" size={40} color="#f5e490"/>     
                 </View>
             ) : (
             <View
@@ -152,12 +152,12 @@ const BottomNav = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: window.width*0.25,
-                    height: 55,
+                    height: 50,
                     borderRightWidth: 0.6,
                     borderRightColor: 'white'
                 }}
                 >
-                  <Icons1 name="bar-graph" size={40} color="white"/>     
+                  <Icons1 name="bar-graph" size={35} color="white"/>     
                 </View>
             )}
             </View>
@@ -176,12 +176,12 @@ const BottomNav = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: window.width*0.25,
-                  height: 55,
+                  height: 50,
                   borderRightWidth: 0.6,
                   borderRightColor: 'white'
                 }}
                 >
-                  <Icons2 name="account-circle" size={50} color="#f5e490"/>     
+                  <Icons2 name="account-circle" size={40} color="#f5e490"/>     
                 </View>
             ) : (
             <View
@@ -190,10 +190,10 @@ const BottomNav = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: window.width*0.25,
-                  height: 55,
+                  height: 50,
                 }}
                 >
-                  <Icons2 name="account-circle" size={40} color="white"/>     
+                  <Icons2 name="account-circle" size={35} color="white"/>     
                 </View>
             )}
             </View>
