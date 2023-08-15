@@ -61,7 +61,7 @@ const BottomTrending = ({navigation}) => {
   return (
     <SafeAreaProvider>
     <SafeAreaView style={{
-      backgroundColor: "black",
+      backgroundColor: "red",
       height: window.height * 1,
     }}>
       <View style={{

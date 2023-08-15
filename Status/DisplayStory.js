@@ -1,41 +1,37 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Dimensions, Animated, } from 'react-native'
-import React, { useRef, useEffect, useState, startTransition } from 'react'
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
-import { useSelector } from 'react-redux'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import { Video } from 'expo-av'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import { ProgressBar } from 'react-native-paper'
+import {
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  Image,
+  Pressable,
+  Animated,
+  Dimensions,
+} from "react-native";
+import { useSelector } from "react-redux";
+import React, { useState, useRef } from "react";
+import { useNavigation } from "@react-navigation/native";
 
+import { Video } from "expo-av";
 const window = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height
-}
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height,
+};
 
-
-
-const DisplayStory = ({ navigation }) => {
+const DisplayStory = () => {
+  const navigation = useNavigation();
   const story = useSelector((state) => state.story);
-  const [isScrollViewReady, setIsScrollViewReady] = useState(false);
   const user = story.user;
-  const [story_content, setStory_content] = useState(user)
-  const [current, setcurrent] = useState(0)
-  const [active_status, setActive_status] = useState()
-  const [currentWidth, setCurrentWidth] = useState(0)
-  const scrollViewRef1 = useRef(null)
+  // console.log(user,"USERHHH")
 
+  const [instastory, setInstastory] = useState(user);
 
-  const scrollViewRef = useRef(null);
-  const itemWidth = window.width * 1;
-  const numItems = user.length;
-  const scrollInterval = useRef(null);
-
-
-
-  // function for calculating how  much time before post has been uploaded
+  const { width, height } = useWindowDimensions();
+  const flatlistRef = useRef(null);
   const beforetime = (time1) => {
-    const currentTime = new Date().getTime()
+    const currentTime = new Date().getTime();
     const milliseconds = currentTime - time1;
     const minute = 60 * 1000; // milliseconds in a minute
     const hour = 60 * minute; // milliseconds in an hour
@@ -55,219 +51,252 @@ const DisplayStory = ({ navigation }) => {
     } else {
       return `${Math.floor(milliseconds / year)} y`;
     }
-  }
+  };
 
-  // console.log(user)
-  // function for moving next story 
-  const next = () => {
-    if (current != story_content.length - 1) {
-      let tempData = story_content;
-      tempData[current].finish = 1;
-      setStory_content(tempData)
-      setcurrent(current + 1)
-      progress.setValue(0)
-    } else {
-      close()
-    }
-  }
+  const styles = StyleSheet.create({
+    main_conatiner: {
+      position: 'absolute',
+      backgroundColor: 'black',
+      width: window.width * 1,
+      height: window.height * 1,
+      top:30
+    },
+    story_page: {
+      backgroundColor: "#1b1b1b",
+      width: width,
+      height: height,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      paddingHorizontal: 10,
+      alignItems: "center",
+      paddingVertical: 10,
+      position: "absolute",
+      width: width,
+      top: 10,
+      left: 0,
+      right: 0,
+      zIndex: 2,
+    },
+    image_view: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    next_view: {
+      width: width * 0.4,
+      height: height,
+      backgroundColor: "rgba(0,0,0.4",
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+    },
+  });
 
-
-
-  const close = () => {
-    progress.setValue(0)
-    navigation.goBack()
-  }
-
-  //function for moving previous story
-  const previous = () => {
-    if (current - 1 >= 0) {
-      let tempData = story_content;
-      tempData[current].finish = 0;
-      setStory_content(tempData)
-      progress.setValue(0)
-      setcurrent(current - 1)
-    } else {
-      close()
-    }
-  }
-
-
-  const progress = useRef(new Animated.Value(0)).current;
-
-  const start = () => {
-    Animated.timing(progress, {
-      toValue: 1,
-      duration: 5000,
-      useNativeDriver: false,
-    }).start(({ finished }) => {
-      if (finished) {
-        next()
-      } else {
-        navigation.goBack()
-      }
-    })
-  }
-
-
-
-
-
-  return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{
-        position: 'absolute',
-        backgroundColor: 'black',
-        width: window.width * 1,
-        height: window.height * 1,
-      }}>
-        <View style={styles.display_view}>
-          {story_content[current].text && <Text onLayout={() => {
-            progress.setValue(0)
-            start()
-          }} style={styles.text}>{story_content[current].text}</Text>}
-          {story_content[current].image_url && <Image onLoadEnd={() => {
-            progress.setValue(0)
-            start()
-          }} source={{ uri: story_content[current].image_url }} style={styles.image_view} resizeMode='cover' />}
-          {story_content[current].video_url && <Video onLoadEnd={() => {
-            progress.setValue(0)
-            start()
-          }} source={{ uri: story_content[current].video_url }} style={{
-            width: window.width * 1,
-            height: window.height * 1
-          }} />}
-          <View style={{
-            position: 'absolute',
-            top: 20,
-            left: 15,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Image style={{
-              width: window.width * 0.09,
-              height: window.height * 0.03,
-            }} source={require("../assets/back.png")} />
-            <View style={{marginLeft: 10}}>
-            <Image
-              source={{ uri: story_content[current].profile_picture }}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-              }}
-            />
-            </View>
-            
-            <View style={{ marginLeft: 10 }}>
-              <Text style={styles.txt}>{story_content[current].username}</Text>
-              <Text style={styles.txt}>{beforetime(story_content[current].timestamp)}</Text>
-            </View>
-          </View>
-          <View style={styles.main_touch}>
-            <TouchableOpacity
-              onPress={() => {
-                previous()
-              }}
-              style={{
-                width: window.width * 0.35,
-                height: window.height * 1
+  const RenderStory = ({ stories, progress, start }) => {
+    // console.log(stories, "ST");
+    const type = stories?.content_type;
+    switch (type) {
+      case "word":
+        return (
+          <View
+            style={{
+              width: window.width * 1,
+              height: window.height * 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{ fontSize: 30, color: "white" }}
+              onLayout={() => {
+                progress.setValue(0);
+                start();
               }}
             >
-
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                next()
-              }}
-              style={{
-                width: window.width * 0.35,
-                height: window.height * 1
-              }}>
-
-            </TouchableOpacity>
+              {stories?.content}
+            </Text>
           </View>
+        );
+      case "photo":
+        return (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              bottom: 40,
+            }}
+          >
+            <Image
+              source={{ uri: stories?.content }}
+              style={{ width: width, height: height }}
+              onLoad={() => {
+                progress.setValue(0);
+                start();
+              }}
+              resizeMode="contain"
+            />
 
-          <View style={{
-            position: 'absolute',
-            top: 10,
-            flex: 1,
-            flexDirection: 'row'
-          }}>
+            <View style={{ backgroundColor: "white", bottom: 20 }}></View>
+          </View>
+        );
+      case "filevideo":
+        return (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              bottom: 40,
+            }}
+          >
+            <Video
+              source={{ uri: stories?.content }}
+              style={{ width: width, height: height }}
+              resizeMode="contain"
+              paused={false}
+              onLoad={() => {
+                progress.setValue(0);
+                start();
+              }}
+              shouldPlay
+              useNativeControls
+              isLooping
+            />
+          </View>
+        );
+    }
+  };
+  const RenderItem = ({ item, index }) => {
+    const [current_story_index, setCurrent_story_index] = useState(0);
+    const timestampDifference =
+      new Date().getTime() - instastory[current_story_index].timestamp;
+    const isWithin24Hours = timestampDifference < 24 * 60 * 60 * 1000;
+    if (!isWithin24Hours) {
+      close(); // Post has expired, close the story view
+      return null;
+    }
+    const stories_length = user.length;
+    const handleNextStory = () => {
+      if (current_story_index < stories_length - 1) {
+        progress.setValue(0);
+        setCurrent_story_index((p) => p + 1);
+      } else {
+        close();
+        console.log("error in next  story");
+      }
+    };
 
-            {user.map((item, index) => (
-              <View style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                height: 2,
-                flex: 1,
-                margin: 2
-              }}>
+    const close = () => {
+      progress.setValue(0);
+      navigation.goBack();
+    };
+
+    const handlePrevoiusStory = () => {
+      if (current_story_index > 0) {
+        progress.setValue(0);
+        setCurrent_story_index((p) => p - 1);
+      } else {
+        close();
+        console.log("error in previous story");
+      }
+    };
+   
+    const progress = useRef(new Animated.Value(0)).current;
+    const start = () => {
+      Animated.timing(progress, {
+        toValue: 1,
+        duration: 5000,
+        useNativeDriver: false,
+      }).start(({ finished }) => {
+        if (finished) {
+          handleNextStory();
+        }
+      });
+    };
+
+    return (
+      <View style={styles.story_page}>
+        <View
+          style={{
+            width: width,
+            top: 5,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            position: "absolute",
+          }}
+        >
+          {user.map((item, key) => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  height: 5,
+                  backgroundColor: "#525861",
+                  marginLeft: 10,
+                }}
+              >
                 <Animated.View
                   style={{
-                    flex: current === index ? progress : story_content[index].finish,
-                    backgroundColor: 'rgba(255, 255, 255, 1)',
-                    // margin: 2,
-                    // height: 2
+                    flex:
+                      current_story_index == key
+                        ? progress
+                        : user[index].finish,
+                    height: 5,
+                    backgroundColor: "#bac3d1",
                   }}
-                >
-
-                </Animated.View>
+                ></Animated.View>
               </View>
-            ))}
-
-          </View>
-
-
-
+            );
+          })}
         </View>
 
-      </SafeAreaView>
-    </SafeAreaProvider>
-  )
-}
+        <View style={styles.header}>
+          <View style={styles.image_view}>
+            <Image
+              source={{ uri: item?.profile_picture }}
+              style={{ width: 40, height: 40, borderRadius: 100 }}
+            />
+            <View style={{ marginLeft: 10 }}>
+              <Text style={{ color: "#fff" }}>{item?.username}</Text>
+              <Text style={{ color: "#fff" }}>
+                {beforetime(instastory[current_story_index].timestamp)}
+              </Text>
+            </View>
+          </View>
+        </View>
 
+        <RenderStory
+          stories={instastory[current_story_index]}
+          progress={progress}
+          start={start}
+        />
+        <Pressable
+          style={[styles.next_view, { right: 0 }]}
+          onPress={handleNextStory}
+        />
+        <Pressable
+          style={[styles.next_view, { left: 0 }]}
+          onPress={handlePrevoiusStory}
+        />
+      </View>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.main_conatiner}>
+      <FlatList
+        data={instastory}
+        horizontal={true}
+        pagingEnabled={true}
+        ref={flatlistRef}
+        renderItem={({ item, index }) => {
+          return <RenderItem item={item} index={index} />;
+        }}
+      />
+    </SafeAreaView>
+  );
+};
 
 export default DisplayStory;
-
-
-
-
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 30,
-    color: 'white'
-  },
-  main_touch: {
-    width: window.width * 1,
-    height: window.height * 1,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    // backgroundColor: 'green',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  display_view: {
-    width: window.width * 1,
-    height: window.height * 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  image_view: {
-    width: window.width * 1,
-    height: window.height * 1,
-
-  },
-  txt: {
-    color: 'white',
-
-  }
-})
-
-
-
-
-
-
-

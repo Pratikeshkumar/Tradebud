@@ -1,38 +1,39 @@
+
 {
-  "cli": {
-    "version": ">= 3.9.0"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "ios": {
-        "resourceClass": "m-medium"
-      },
-      "channel": "development"
+    "cli": {
+      "version": ">= 3.9.0"
     },
-    "preview": {
-      "distribution": "internal",
-      "ios": {
-        "resourceClass": "m-medium"
+    "build": {
+      "development": {
+        "developmentClient": true,
+        "distribution": "internal",
+        "ios": {
+          "resourceClass": "m-medium"
+        },
+        "channel": "development"
       },
-      "channel": "preview"
-    },
-    "production": {
-      "ios": {
-        "resourceClass": "m-medium"
+      "preview": {
+        "distribution": "internal",
+        "ios": {
+          "resourceClass": "m-medium"
+        },
+        "channel": "preview"
       },
-      "channel": "production"
-    },
-    "development-simulator": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "ios": {
-        "simulator": true
+      "production": {
+        "ios": {
+          "resourceClass": "m-medium"
+        },
+        "channel": "production"
+      },
+      "development-simulator": {
+        "developmentClient": true,
+        "distribution": "internal",
+        "ios": {
+          "simulator": true
+        }
       }
+    },
+    "submit": {
+      "production": {}
     }
-  },
-  "submit": {
-    "production": {}
   }
-}

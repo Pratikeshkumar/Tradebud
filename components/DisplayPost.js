@@ -295,10 +295,10 @@ const DisplayPost = ({ item, index, navigation }) => {
 
 
   return (
-    <View style={{ flex: 1, width: window.width * 1, marginTop: 10, paddingLeft: window.width * 0.02, paddingRight: window.width * 0.02, flexDirection: 'row' }}>
+    <View style={{ flex: 1, width: window.width * 1, paddingLeft: window.width * 0.02, paddingRight: window.width * 0.02, flexDirection: 'row' }}>
 
       {/* Post Profile Picture */}
-      <View style={{ width: window.width * 0.18, }}>
+      <View style={{ width: window.width * 0.18}}>
         <TouchableOpacity
           onPress={() => {
             // dispatch(addWatchUserName(data.username))
@@ -314,14 +314,20 @@ const DisplayPost = ({ item, index, navigation }) => {
         </TouchableOpacity>
       </View>
       {/* Post body content */}
-      <View style={{ width: window.width * 0.75 }} >
+      <View style={{ width: window.width * 0.75}} >
         {/* Post Header */}
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-          <View>
-            <Text style={{ color: 'white', fontSize: 20, fontWeight: '700' }}>{data.username.substring(0, 19)}</Text>
+        <View style={{width:window.width*1,height:4,backgroundColor:"#000"}}></View>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' , width:window.width*.82,paddingVertical:10}}>
+          <View style={{width:window.width*.50}}>
+            <Text style={{ color: 'white', fontSize: 20, fontWeight: '800' }}>
+              { data?.username?.length > 10 ? data.username.substring(0, 10)+ '...' : data?.username}
+              </Text>
             {item.monetize && <Text style={{ color: 'grey', fontWeight: '900', fontSize: 10 }}>paid</Text>}
           </View>
-          <Text style={{ color: 'white', marginLeft: 20 }}>.{beforetime(data.timestamp)} ago</Text>
+          <View style={{width:window.width*.38}}>
+          <Text style={{ color: 'white' }}>.{beforetime(data.timestamp)} ago</Text>
+          </View>
+         
         </View>
         {/* Post Text */}
         <View>

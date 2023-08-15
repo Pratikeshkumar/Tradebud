@@ -18,6 +18,7 @@ import Privacy from './Screen/Privacy'
 import { addEventListener } from 'expo-linking'
 import * as Linking from 'expo-linking'
 
+
 const Stack = createNativeStackNavigator()
 
 const MainApp = () => {
@@ -111,6 +112,7 @@ const linking = {
         <Stack.Screen name='HomeStack' component={HomeStack} />
         <Stack.Screen name='Terms' component={Terms} />
         <Stack.Screen name='Privacy' component={Privacy} />
+      
       </Stack.Navigator>
       )}
     </NavigationContainer>

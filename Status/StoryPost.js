@@ -45,9 +45,11 @@ const postText = ()=>{
             username: username,
             timestamp: time,
             profile_picture: profile_picture,
-            text: text,
+            content: text,
+            content_type:"word",
             likes: [],
-            reached: []
+            reached: [],
+            finish:0
         })
         .then(()=>{
             setText('')
@@ -74,9 +76,11 @@ const postImages = async()=>{
                 username: username,
                 timestamp: time,
                 profile_picture: profile_picture,
-                image_url: image_url,
+                content: image_url,
+                content_type:"photo",
                 likes: [],
-                reached: []
+                reached: [],
+                finish:0
             })
             .then(()=>{
                 setIsLoading(false)
@@ -109,9 +113,11 @@ const postVideo = async()=>{
                 username: username,
                 timestamp: time,
                 profile_picture: profile_picture,
-                video_url: video_url,
+                content: video_url,
+                content_type:"filevideo",
                 likes: [],
-                reached: []
+                reached: [],
+                finish:0
             })
             .then(()=>{
                 setIstext(true)

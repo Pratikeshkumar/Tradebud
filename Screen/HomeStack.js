@@ -22,6 +22,7 @@ import Notification from './Notification';
 import VideoPlayerScreen from './VideoPlayerScreen';
 import PhotoScreen from './PhotoScreen';
 import ViewSharedPostScreen from './ViewSharedPostScreen'
+import Other_UserStory from "../Status/Other_UserStory"
 
 const HomeStack = () => {
     const Stack = createNativeStackNavigator();
@@ -54,6 +55,7 @@ const HomeStack = () => {
             <Stack.Screen name="VideoPlayerScreen" component={VideoPlayerScreen} />
             <Stack.Screen name="PhotoScreen" component={PhotoScreen} />
             <Stack.Screen name="ViewSharedPostScreen" component={ViewSharedPostScreen} />
+            <Stack.Screen name='Other_UserStory' component={Other_UserStory} />
 
         </Stack.Navigator>
 
